@@ -1101,5 +1101,13 @@ campaign.slice(10,18).forEach((l,i)=>{l.saveKey=`campaign-${i+11}-2`;delete l.le
 campaign.forEach((l,id)=>{l.id=id;l.group='main';delete l.chapter;});
 
 Object.defineProperty(campaign,'catalog',{value:levels});
-if(typeof module!=='undefined')module.exports=campaign;else root.TogetherLevels=campaign;
+const buildCampaign=typeof module!=='undefined'?require('./campaign.js'):root.TogetherCampaign;
+const current=buildCampaign(campaign);
+Object.defineProperty(current,'catalog',{value:levels});
+Object.defineProperty(current,'previous',{value:campaign});
+const warmup=(typeof module!=='undefined'?require('./warmup.js'):root.TogetherWarmup).level;
+// Keep tutorial access separate from the twenty saved campaign entries.
+Object.defineProperty(current,'warmup',{value:warmup});
+Object.defineProperty(current,'-1',{value:warmup});
+if(typeof module!=='undefined')module.exports=current;else root.TogetherLevels=current;
 })(globalThis);
